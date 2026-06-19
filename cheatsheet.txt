@@ -107,52 +107,37 @@ LUKS encryption
 ===============
 
 
-Create LUKS on existing ext4 partition without deleting data
-------------------------------------------------------------
+Create fresh LUKS on partition
+------------------------------
 
-1. Check ext4 filesystem:
+WARNING: This destroys existing data on the partition.
+Backup data first.
 
-    e2fsck -f /dev/sdX1
 
-2. Shrink ext4 filesystem a little to make space for LUKS metadata:
+1. Create LUKS container pn ext4 partition:
 
-    resize2fs /dev/sdX1 -32M
+    cryptsetup luksFormat --type luks2 /dev/sdX1
+    cryptsetup open /dev/sdX1 cryptdisk
+    mkfs.ext4 /dev/mapper/cryptdisk
 
-5. Encrypt existing partition in-place without losing data:
+2. Mount it:
 
-    cryptsetup reencrypt --encrypt --type luks2 --reduce-device-size 32M /dev/sdX1
+    mkdir -p /mnt/cryptdisk
+    mount /dev/mapper/cryptdisk /mnt/cryptdisk
 
-6. Open encrypted partition:
-
-    cryptsetup luksOpen /dev/sdX1 cryptdisk
-
-7. Check ext4 filesystem inside unlocked LUKS device:
-
-    e2fsck -f /dev/mapper/cryptdisk
-
-8. Grow ext4 filesystem to available space inside LUKS device:
-
-    resize2fs /dev/mapper/cryptdisk
+3. Restore backup data into /mnt/cryptdisk.
 
 
 Unlock and mount existing LUKS partition
 ----------------------------------------
 
-1. Open encrypted partition:
+1. Open and mount encrypted partition:
 
     cryptsetup luksOpen /dev/sdX1 cryptdisk
-
-2. Mount decrypted filesystem:
-
     mkdir -p /mnt/cryptdisk
     mount /dev/mapper/cryptdisk /mnt/cryptdisk
 
-3. Check result:
-
-    lsblk -f
-    findmnt /mnt/cryptdisk
-
-4. Unmount and close encrypted partition:
+2. Unmount and close encrypted partition:
 
     umount /mnt/cryptdisk
     cryptsetup luksClose cryptdisk
