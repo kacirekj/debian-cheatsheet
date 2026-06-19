@@ -13,7 +13,7 @@ Backup with tar
 
 1. To backup currently running Debian, run this command and don't forget ".":
 
-    tar --create --gzip --one-file-system --ignore-failed-read --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
+    tar --create --gzip --verbose --one-file-system --ignore-failed-read --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
 
 2. To recover, boot to Live CD
 3. Mount backups and Debian partitions
@@ -113,6 +113,24 @@ Unlock and mount existing LUKS partition
 
 
 
+Package manager
+===============
+
+Full cleanup of unused data
+---------------------------
+
+    apt autoremove
+    apt autoclean
+
+
+Search
+------
+
+    apt list --installed | grep openbox
+    apt search openbox
+
+
+
 X11 setup
 =========
 
@@ -134,6 +152,7 @@ Setup default desktop
     xhost +SI:localuser:root >/dev/null 2>&1
 
     xfce-terminal & exec icewm-session
+
 
 Setup XRDP
 ----------
