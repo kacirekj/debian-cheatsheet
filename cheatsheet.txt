@@ -111,3 +111,34 @@ Unlock and mount existing LUKS partition
     umount /mnt/cryptdisk
     cryptsetup luksClose cryptdisk
 
+
+
+X11 setup
+=========
+
+
+Setup default desktop
+---------------------
+
+1. Install
+
+    apt install xorg
+    apt install icewm
+    apt install xfce-terminal
+
+2. Modify ~/.xinitrc for implicit behavior for startx command:
+
+    #!/bin/sh
+
+    # Allow root to start apps in session:
+    xhost +SI:localuser:root >/dev/null 2>&1
+
+    xfce-terminal & exec icewm-session
+
+Setup XRDP
+----------
+
+Audio should work out of box:
+
+    apt instal xrdp
+    apt install pipewire pipewire-module-xrdp
