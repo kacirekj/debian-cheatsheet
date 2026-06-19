@@ -200,6 +200,20 @@ Setup default desktop
     xfce-terminal & exec icewm-session
 
 
+Run app as root i X-session
+---------------------------
+
+1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session:
+
+    xhost +SI:localuser:root >/dev/null 2>&1
+
+2. Then the root's app must be executed as follow:
+
+    su   # (without "-")
+    /sbin/gparted
+
+
+
 Setup XRDP
 ----------
 
