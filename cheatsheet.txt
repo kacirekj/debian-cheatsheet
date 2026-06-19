@@ -15,11 +15,57 @@ Backup with tar
 
     tar --create --gzip --verbose --one-file-system --ignore-failed-read --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
 
-2. To recover, boot to Live CD
-3. Mount backups and Debian partitions
-4. Run:
+
+Recovery with tar
+-----------------
+
+1. To recover, boot to Live CD
+2. Mount backups and Debian partitions
+3. Run:
 
     tar --extract --gzip --file=/mnt/debian-backup/backup.tgz --directory=/mnt/debian-rootfs/
+
+
+Recover GRUB on Debian UEFI disk
+--------------------------------
+
+1. Boot Live CD in UEFI mode.
+2. Mount target system:
+
+    mount /dev/sdX2       /mnt/usb-root
+    mkdir -p              /mnt/usb-root/boot/efi
+    mount /dev/sdX1       /mnt/usb-root/boot/efi
+
+3. Bind required system filesystems:
+
+    mount --bind /dev     /mnt/usb-root/dev
+    mount --bind /dev/pts /mnt/usb-root/dev/pts
+    mount --bind /proc    /mnt/usb-root/proc
+    mount --bind /sys     /mnt/usb-root/sys
+
+4. Enter chroot:
+
+    chroot /mnt/usb-root /bin/bash
+
+5. Fix /etc/fstab if needed:
+
+    blkid
+    vim /etc/fstab
+
+6. Reinstall GRUB for UEFI removable boot:
+
+    grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --removable --recheck
+    update-grub
+
+7. Verify EFI files:
+
+    ls -R /boot/efi/EFI
+
+8. Exit and unmount:
+
+    exit
+    umount -R /mnt/usb-root
+    sync
 
 
 
