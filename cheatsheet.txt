@@ -1,1 +1,57 @@
-test
+=================
+Debian cheatsheet
+=================
+
+
+
+Backup and recovery
+===================
+
+
+Backup with tar
+---------------
+
+1. To backup currently running Debian, run this command and don't forget ".":
+
+    tar --create --gzip --one-file-system --ignore-failed-read --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
+
+2. To recover, boot to Live CD
+3. Mount backups and Debian partitions
+4. Run:
+
+    tar --extract --gzip --file=/mnt/debian-backup/backup.tgz --directory=/mnt/debian-rootfs/
+
+
+
+Creating partitions
+===================
+
+
+Create EFI, boot and ext4 root partition on external disk
+---------------------------------------------------------
+
+1. Wipe old filesystem and create empty GPT table:
+
+    wipefs -a /dev/sdX
+    parted /dev/sdX --script mklabel gpt
+
+2. Create partitions:
+
+    parted /dev/sdX --script mkpart my-efi   fat32    1MiB    513MiB
+    parted /dev/sdX --script mkpart my-boot  ext4   513MiB   1537MiB
+    parted /dev/sdX --script mkpart my-root  ext4  1537MiB  52737MiB
+
+3. Mark 1st partition as EFI:
+
+    parted /dev/sdX --script set 1 esp on
+
+8. Reload partition table:
+
+    partprobe /dev/sdX
+
+9. Format EFI partition:
+
+    mkfs.vfat -F 32 -n  my-efi-fs   /dev/sdX1
+    mkfs.ext4 -L        my-boot-fs  /dev/sdX2
+    mkfs.ext4 -L        my-root-fs  /dev/sdX3
+
