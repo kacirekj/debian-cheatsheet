@@ -4,6 +4,70 @@ Debian cheatsheet
 
 
 
+Package manager
+===============
+
+Full cleanup of unused data
+---------------------------
+
+    apt autoremove
+    apt autoclean
+
+
+Search
+------
+
+    apt list --installed | grep openbox
+    apt search openbox
+
+
+
+X11 setup
+=========
+
+
+Setup default desktop
+---------------------
+
+1. Install
+
+    apt install xorg
+    apt install icewm
+    apt install xfce-terminal
+
+2. Modify ~/.xinitrc for implicit behavior for startx command:
+
+    #!/bin/sh
+
+    # Allow root to start apps in session:
+    xhost +SI:localuser:root >/dev/null 2>&1
+
+    xfce-terminal & exec icewm-session
+
+
+Run app as root i X-session
+---------------------------
+
+1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session:
+
+    xhost +SI:localuser:root >/dev/null 2>&1
+
+2. Then the root's app must be executed as follow:
+
+    su   # (without "-")
+    /sbin/gparted
+
+
+Setup XRDP
+----------
+
+Audio should work out of box:
+
+    apt instal xrdp
+    apt install pipewire pipewire-module-xrdp
+
+
+
 Backup and recovery
 ===================
 
@@ -26,45 +90,80 @@ Recovery with tar
     tar --extract --gzip --file=/mnt/debian-backup/backup.tgz --directory=/mnt/debian-rootfs/
 
 
-Recover GRUB on Debian UEFI disk
---------------------------------
+Recover GRUB and /boot on Debian UEFI disk with LUKS root
+---------------------------------------------------------
+
+NOTE: This can be easily made with variant without luks
+Because it's not necessary to have swal in external partition, we don't have it.
 
 1. Boot Live CD in UEFI mode.
 2. Mount target system:
 
-    mount /dev/sdX2       /mnt/usb-root
-    mkdir -p              /mnt/usb-root/boot/efi
-    mount /dev/sdX1       /mnt/usb-root/boot/efi
+    mount /dev/mapper/cryptroot /mnt/usb-root
+    mount /dev/sdX1             /mnt/usb-root/boot/efi
+    mount /dev/sdX2             /mnt/usb-root/boot
 
 3. Bind required system filesystems:
 
-    mount --bind /dev     /mnt/usb-root/dev
-    mount --bind /dev/pts /mnt/usb-root/dev/pts
-    mount --bind /proc    /mnt/usb-root/proc
-    mount --bind /sys     /mnt/usb-root/sys
+    mount --bind /dev           /mnt/usb-root/dev
+    mount --bind /dev/pts       /mnt/usb-root/dev/pts
+    mount --bind /proc          /mnt/usb-root/proc
+    mount --bind /sys           /mnt/usb-root/sys
 
-4. Enter chroot:
+5. Enter chroot:
 
     chroot /mnt/usb-root /bin/bash
 
-5. Fix /etc/fstab if needed:
+6. Fix /etc/crypttab:
+
+    cryptsetup luksUUID /dev/sdX3
+    vim /etc/crypttab
+
+    Example:
+
+    cryptroot UUID=LUKS-UUID-HERE none luks
+
+7. Fix /etc/fstab:
 
     blkid
     vim /etc/fstab
 
-6. Reinstall GRUB for UEFI removable boot:
+    Example:
+
+    UUID=ROOT-EXT4-UUID  /          ext4  defaults,noatime  0  1
+    UUID=BOOT-UUID       /boot      ext4  defaults,noatime  0  2
+    UUID=EFI-UUID        /boot/efi  vfat  umask=0077       0  1
+
+8. Update initramfs:
+
+    apt install cryptsetup-initramfs
+    update-initramfs -u -k all
+
+9. Reinstall GRUB for UEFI removable boot:
 
     grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --removable --recheck
     update-grub
 
-7. Verify EFI files:
+10. Verify EFI and boot files:
 
     ls -R /boot/efi/EFI
+    ls -l /boot
 
-8. Exit and unmount:
+11. Exit and unmount:
 
     exit
-    umount -R /mnt/usb-root
+    cd /
+    sync
+
+    umount /mnt/usb-root/dev/pts 2>/dev/null
+    umount /mnt/usb-root/dev     2>/dev/null
+    umount /mnt/usb-root/proc    2>/dev/null
+    umount /mnt/usb-root/sys     2>/dev/null
+    umount /mnt/usb-root/boot/efi
+    umount /mnt/usb-root/boot
+    umount /mnt/usb-root
+
+    cryptsetup close cryptroot
     sync
 
 
@@ -143,66 +242,3 @@ Unlock and mount existing LUKS partition
     cryptsetup luksClose cryptdisk
 
 
-
-Package manager
-===============
-
-Full cleanup of unused data
----------------------------
-
-    apt autoremove
-    apt autoclean
-
-
-Search
-------
-
-    apt list --installed | grep openbox
-    apt search openbox
-
-
-
-X11 setup
-=========
-
-
-Setup default desktop
----------------------
-
-1. Install
-
-    apt install xorg
-    apt install icewm
-    apt install xfce-terminal
-
-2. Modify ~/.xinitrc for implicit behavior for startx command:
-
-    #!/bin/sh
-
-    # Allow root to start apps in session:
-    xhost +SI:localuser:root >/dev/null 2>&1
-
-    xfce-terminal & exec icewm-session
-
-
-Run app as root i X-session
----------------------------
-
-1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session:
-
-    xhost +SI:localuser:root >/dev/null 2>&1
-
-2. Then the root's app must be executed as follow:
-
-    su   # (without "-")
-    /sbin/gparted
-
-
-
-Setup XRDP
-----------
-
-Audio should work out of box:
-
-    apt instal xrdp
-    apt install pipewire pipewire-module-xrdp
