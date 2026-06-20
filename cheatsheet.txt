@@ -60,7 +60,7 @@ Setup default desktop
     apt install xorg
     apt install openbox
     apt install tint2
-    apt install xfce-terminal
+    apt install alacrityy
 
 2. Modify ~/.xinitrc for implicit behavior of the startx command:
 
@@ -72,6 +72,10 @@ Setup default desktop
     tint2 &
 
     exec openbox-session
+
+3. Then
+
+    startx
 
 
 Run app as root i X-session
@@ -93,6 +97,13 @@ Stop all user-related services when user is not logged in
     loginctl disable-linger debian   # For user "debian"
 
 
+Setup audio
+-----------
+
+Should work out of box:
+
+    apt install --no-install-recommends pipewire wireplumber pipewire-pulse pipewire-alsa
+
 
 Setup XRDP
 ----------
@@ -100,6 +111,9 @@ Setup XRDP
 Audio should work out of box an not additional configs are needed:
 
     apt instal xrdp
+
+For sound to be working:
+
     apt install pipewire pipewire-module-xrdp
 
 
