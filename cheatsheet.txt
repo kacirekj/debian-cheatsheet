@@ -22,6 +22,7 @@ Search
     apt depends                             # List Dependencis
 
 
+
 X11 setup
 =========
 
@@ -35,7 +36,7 @@ Setup default desktop
     apt install icewm
     apt install xfce-terminal
 
-2. Modify ~/.xinitrc for implicit behavior for startx command:
+2. Modify ~/.xinitrc for implicit behavior of the startx command as well as XRDP:
 
     #!/bin/sh
 
@@ -48,20 +49,27 @@ Setup default desktop
 Run app as root i X-session
 ---------------------------
 
-1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session:
+1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session terminal:
 
     xhost +SI:localuser:root >/dev/null 2>&1
 
-2. Then the root's app must be executed as follow:
+2. Then the root's app *have to* be executed as follow:
 
     su   # (without "-")
     /sbin/gparted
 
 
+Stop all user-related services when user is not logged in
+---------------------------------------------------------
+
+    loginctl disable-linger debian   # For user "debian"
+
+
+
 Setup XRDP
 ----------
 
-Audio should work out of box:
+Audio should work out of box an not additional configs are needed:
 
     apt instal xrdp
     apt install pipewire pipewire-module-xrdp
