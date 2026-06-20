@@ -33,9 +33,11 @@ List installed
     apt list --installed | grep -v lib | column -t
 
 Search in repository
+
     apt search openbox                                   
 
-List dependencies a dependatns:
+List dependencies and dependatns:
+
     apt depends openbox
     apt rdepends openbow
     aptitude why openbow
