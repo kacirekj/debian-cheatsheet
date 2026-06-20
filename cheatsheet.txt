@@ -17,9 +17,9 @@ Full cleanup of unused data
 Search
 ------
 
-    apt list --installed | grep openbox
-    apt search openbox
-
+    apt list --installed | grep openbox     # List installed
+    apt search openbox                      # List in repository
+    apt depends                             # List Dependencis
 
 
 X11 setup
