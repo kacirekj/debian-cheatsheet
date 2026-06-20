@@ -21,6 +21,10 @@ Search
     apt search openbox                      # List in repository
     apt depends                             # List Dependencis
 
+To list apps installed by me by hand:
+
+    cat /var/log/apt/history.log | grep -e install -e remove
+
 
 
 X11 setup
