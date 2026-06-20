@@ -10,8 +10,18 @@ Package manager
 Full cleanup of unused data
 ---------------------------
 
+To do cleanup:
+
     apt autoremove
     apt autoclean
+
+To remove something including configs:
+
+    apt purge icewm
+
+To clean all Recommended and Suggested apps (which I didn't want to have):
+
+    apt autoremove --purge -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
 
 
 Search
