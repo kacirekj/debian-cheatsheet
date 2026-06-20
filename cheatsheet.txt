@@ -33,17 +33,20 @@ Setup default desktop
 1. Install
 
     apt install xorg
-    apt install icewm
+    apt install openbox
+    apt install tint2
     apt install xfce-terminal
 
-2. Modify ~/.xinitrc for implicit behavior of the startx command as well as XRDP:
+2. Modify ~/.xinitrc for implicit behavior of the startx command:
 
     #!/bin/sh
 
     # Allow root to start apps in session:
     xhost +SI:localuser:root >/dev/null 2>&1
 
-    xfce-terminal & exec icewm-session
+    tint2 &
+
+    exec openbox-session
 
 
 Run app as root i X-session
