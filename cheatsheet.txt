@@ -70,8 +70,12 @@ Setup default desktop
     xhost +SI:localuser:root >/dev/null 2>&1
 
     tint2 &
-
     exec openbox-session
+
+NOTE: Openbox must be executed via session, because otherwise it will 
+not load the "/etc/xdg/" autostart apps. This causes issue at least for
+XRDP, where pipewire-module-xrdp counts with being started during the
+x11 startup to redirect audio to XRDP.
 
 3. Then
 
@@ -108,13 +112,16 @@ Should work out of box:
 Setup XRDP
 ----------
 
-Audio should work out of box an not additional configs are needed:
+Run:
 
     apt instal xrdp
 
 For sound to be working:
 
     apt install pipewire pipewire-module-xrdp
+
+NOTE: Sound works out of box as far as the above script is properly executed from /etc/xdg/ during the
+session startup! 
 
 
 
