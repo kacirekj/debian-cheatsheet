@@ -17,9 +17,18 @@ Full cleanup of unused data
 Search
 ------
 
-    apt list --installed | grep openbox     # List installed
-    apt search openbox                      # List in repository
-    apt depends                             # List Dependencis
+List installed
+
+    apt list --installed | grep openbox                  
+    apt list --installed | grep -v lib | column -t
+
+Search in repository
+    apt search openbox                                   
+
+List dependencies a dependatns:
+    apt depends openbox
+    apt rdepends openbow
+    aptitude why openbow
 
 To list apps installed by me by hand:
 
