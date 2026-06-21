@@ -11,7 +11,6 @@ Tricks
         grep -r "hledany_text" /cesta/slozka
 
 
-
 Package manager
 ===============
 
@@ -30,7 +29,6 @@ Full cleanup of unused data
  -  To clean all Recommended and Suggested apps (which I didn't want to have)::
 
         apt autoremove --purge -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
-
 
 Search
 ------
@@ -55,10 +53,8 @@ Search
         cat /var/log/apt/history.log | grep -e install -e remove
 
 
-
 X11 setup
 =========
-
 
 Setup default desktop
 ---------------------
@@ -89,7 +85,6 @@ Setup default desktop
 
         startx
 
-
 Run app as root i X-session
 ---------------------------
 
@@ -102,7 +97,6 @@ Run app as root i X-session
         su   # (without "-")
         /sbin/gparted
 
-
 Stop all user-related services when user is not logged in
 ---------------------------------------------------------
 
@@ -110,14 +104,12 @@ Stop all user-related services when user is not logged in
 
         loginctl disable-linger debian   # For user "debian"
 
-
 Setup audio
 -----------
 
  -  Should work out of box::
 
         apt install --no-install-recommends pipewire wireplumber pipewire-pulse pipewire-alsa
-
 
 Setup XRDP
 ----------
@@ -134,10 +126,8 @@ Setup XRDP
     session startup! 
 
 
-
 Backup and recovery
 ===================
-
 
 Backup with tar
 ---------------
@@ -146,7 +136,6 @@ Backup with tar
 
         tar --create --gzip --verbose --one-file-system --ignore-failed-read \
             --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
-
 
 Recovery with tar
 -----------------
@@ -158,7 +147,6 @@ Recovery with tar
  3. Run::
 
         tar --extract --gzip --file=/mnt/debian-backup/backup.tgz --directory=/mnt/debian-rootfs/
-
 
 Recover GRUB and /boot on Debian UEFI disk with LUKS root
 ---------------------------------------------------------
@@ -254,7 +242,6 @@ Because it's not necessary to have swal in external partition, we don't have it.
         cryptsetup close cryptroot
         sync
 
-
 Add backup disk automout during startup
 ---------------------------------------
 
@@ -271,11 +258,9 @@ Add backup disk automout during startup
         cryptsetup luksOpen /dev/sdb1 crypt-debian-backup
         update-initramfs -u -k all
 
-    
 
 Creating partitions
 ===================
-
 
 Create EFI, boot and ext4 root partition on external disk
 ---------------------------------------------------------
@@ -310,17 +295,13 @@ Create EFI, boot and ext4 root partition on external disk
         mkswap /dev/sdXN
 
 
-
 LUKS encryption
 ===============
-
 
 Create fresh LUKS on partition
 ------------------------------
 
-WARNING: 
-  This destroys existing data on the partition. Backup data first.
-
+WARNING: This destroys existing data on the partition. Backup data first.
 
  1. Create LUKS container pn ext4 partition::
 
@@ -349,4 +330,4 @@ Unlock and mount existing LUKS partition
 
         umount /mnt/cryptdisk
         cryptsetup luksClose cryptdisk
-```
+
