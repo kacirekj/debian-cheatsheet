@@ -26,7 +26,8 @@ Full cleanup of unused data
 
         apt purge icewm
 
- -  To clean all Recommended and Suggested apps (which I didn't want to have)::
+ -  To clean all Recommended and Suggested apps (which I didn't want to
+    have)::
 
         apt autoremove --purge -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
 
@@ -76,7 +77,7 @@ Setup default desktop
         tint2 &
         exec openbox-session
 
-    NOTE: Openbox must be executed via session, because otherwise it will 
+    NOTE: Openbox must be executed via session, because otherwise it will
     not load the "/etc/xdg/" autostart apps. This causes issue at least for
     XRDP, where pipewire-module-xrdp counts with being started during the
     x11 startup to redirect audio to XRDP.
@@ -88,7 +89,8 @@ Setup default desktop
 Run app as root i X-session
 ---------------------------
 
- 1. When sudo is not installed, this command has to be present in .xinitrc or executed in X session terminal::
+ 1. When sudo is not installed, this command has to be present in .xinitrc
+    or executed in X session terminal::
 
         xhost +SI:localuser:root >/dev/null 2>&1
 
@@ -122,8 +124,8 @@ Setup XRDP
 
         apt install pipewire pipewire-module-xrdp
 
-    NOTE: Sound works out of box as far as the above script is properly executed from /etc/xdg/ during the
-    session startup! 
+    NOTE: Sound works out of box as far as the above script is properly
+    executed from /etc/xdg/ during the session startup!
 
 
 Backup and recovery
@@ -180,13 +182,15 @@ Because it's not necessary to have swal in external partition, we don't have it.
 
     EXAMPLE::
 
-        my-name-for-mounted-luks-root UUID=LUKS-UUID-HERE   none   luks,keyscript=decrypt_keyctl
-        my-name-for-mounted-luks-swap  UUID=SWAP-UUID-HERE  none   luks,initramfs,keyscript=decrypt_keyctl
+        my-name-for-mounted-luks-root  UUID=LUKS-UUID-HERE   none   luks,keyscript=decrypt_keyctl
+        my-name-for-mounted-luks-swap  UUID=SWAP-UUID-HERE   none   luks,initramfs,keyscript=decrypt_keyctl
 
-    NOTE: Thanks to "keyscript=decrypt_keyctl" it will ask for password only once, and thanks to "initramfs" 
-    the swapp will be unlocked during the entering passwd phase.
+    NOTE: Thanks to "keyscript=decrypt_keyctl" it will ask for password only
+    once, and thanks to "initramfs" the swapp will be unlocked during the
+    entering passwd phase.
 
-    WARNING: "apt install keyutils" has to be installed, otherwise keyscript=decrypt_keyctl will not work
+    WARNING: "apt install keyutils" has to be installed, otherwise
+    keyscript=decrypt_keyctl will not work
 
  7. Fix /etc/fstab::
 
@@ -213,7 +217,10 @@ Because it's not necessary to have swal in external partition, we don't have it.
         apt install keyutilsx
         update-initramfs -u -k all
 
-    NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
+    NOTE: 
+
+    In case of SWAP, in may send warnings to console about old swap uuid
+    not found, it shall be ok::
 
  9. Reinstall GRUB for UEFI removable boot::
 
@@ -247,7 +254,7 @@ Add backup disk automout during startup
 
  1. Suppose the disk in encrypted by luks. Add to "/etc/crypttab"::
 
-        crypt-debian-backup  	UUID=BACKUP_DISK_LUKS_UUID none luks,initramfs,keyscript=decrypt_keyctl
+        crypt-debian-backup        UUID=BACKUP_DISK_LUKS_UUID none luks,initramfs,keyscript=decrypt_keyctl
 
  2. Add to "/etc/fstab"::
 
