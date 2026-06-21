@@ -6,9 +6,9 @@ Debian cheatsheet
 Tricks
 ======
 
- -  Search inside of files::
+-  Search inside of files::
 
-        grep -r "hledany_text" /cesta/slozka
+       grep -r "hledany_text" /cesta/slozka
 
 
 Package manager
@@ -17,41 +17,42 @@ Package manager
 Full cleanup of unused data
 ---------------------------
 
- -  To do cleanup::
+-  To do cleanup::
 
-        apt autoremove
-        apt autoclean
+       apt autoremove
+       apt autoclean
 
- -  To remove something including configs::
+-  To remove something including configs::
 
-        apt purge icewm
+       apt purge icewm
 
- -  To clean all Recommended and Suggested apps (which I didn't want to
-    have)::
+-  To clean all Recommended and Suggested apps, which I did not want to
+   have::
 
-        apt autoremove --purge -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+       apt autoremove --purge -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false
+
 
 Search
 ------
 
- -  List installed::
+-  List installed packages::
 
-        apt list --installed | grep openbox
-        apt list --installed | grep -v lib | column -t
+       apt list --installed | grep openbox
+       apt list --installed | grep -v lib | column -t
 
- -  Search in repository::
+-  Search in repository::
 
-        apt search openbox
+       apt search openbox
 
- -  List dependencies and dependatns::
+-  List dependencies and dependants::
 
-        apt depends openbox
-        apt rdepends openbow
-        aptitude why openbow
+       apt depends openbox
+       apt rdepends openbox
+       aptitude why openbox
 
- -  To list apps installed by me by hand::
+-  List apps installed by me by hand::
 
-        cat /var/log/apt/history.log | grep -e install -e remove
+       cat /var/log/apt/history.log | grep -e install -e remove
 
 
 X11 setup
@@ -60,14 +61,15 @@ X11 setup
 Setup default desktop
 ---------------------
 
- 1. Install::
+#.  Install::
 
         apt install xorg
         apt install openbox
         apt install tint2
-        apt install alacrityy
+        apt install alacritty
 
- 2. Modify ~/.xinitrc for implicit behavior of the startx command::
+#.  Modify ``~/.xinitrc`` for implicit behavior of the ``startx``
+    command::
 
         #!/bin/sh
 
@@ -77,55 +79,63 @@ Setup default desktop
         tint2 &
         exec openbox-session
 
-    NOTE: Openbox must be executed via session, because otherwise it will
-    not load the "/etc/xdg/" autostart apps. This causes issue at least for
-    XRDP, where pipewire-module-xrdp counts with being started during the
-    x11 startup to redirect audio to XRDP.
+    .. note::
 
- 3. Then::
+        Openbox must be executed via session, because otherwise it will
+        not load the ``/etc/xdg/`` autostart apps. This causes issue at
+        least for XRDP, where ``pipewire-module-xrdp`` counts with being
+        started during the X11 startup to redirect audio to XRDP.
+
+#.  Then::
 
         startx
 
-Run app as root i X-session
----------------------------
 
- 1. When sudo is not installed, this command has to be present in .xinitrc
-    or executed in X session terminal::
+Run app as root in X-session
+----------------------------
+
+#.  When ``sudo`` is not installed, this command has to be present in
+    ``.xinitrc`` or executed in X-session terminal::
 
         xhost +SI:localuser:root >/dev/null 2>&1
 
- 2. Then the root's app *have to* be executed as follow::
+#.  Then the root app has to be executed as follows::
 
         su   # (without "-")
         /sbin/gparted
 
+
 Stop all user-related services when user is not logged in
 ---------------------------------------------------------
 
- -  It helps to have clean `ps aux`::
+-  It helps to have clean ``ps aux`` output::
 
-        loginctl disable-linger debian   # For user "debian"
+       loginctl disable-linger debian   # For user "debian"
+
 
 Setup audio
 -----------
 
- -  Should work out of box::
+-  This should work out of box::
 
-        apt install --no-install-recommends pipewire wireplumber pipewire-pulse pipewire-alsa
+       apt install --no-install-recommends pipewire wireplumber pipewire-pulse pipewire-alsa
+
 
 Setup XRDP
 ----------
 
- -  Run::
+-  Run::
 
-        apt instal xrdp
+       apt install xrdp
 
- -  For sound to be working::
+-  For sound to be working::
 
-        apt install pipewire pipewire-module-xrdp
+       apt install pipewire pipewire-module-xrdp
 
-    NOTE: Sound works out of box as far as the above script is properly
-    executed from /etc/xdg/ during the session startup!
+   .. note::
+
+       Sound works out of box as far as the above script is properly
+       executed from ``/etc/xdg/`` during the session startup.
 
 
 Backup and recovery
@@ -134,105 +144,115 @@ Backup and recovery
 Backup with tar
 ---------------
 
- 1. To backup currently running Debian, run this command and don't forget "."::
+#.  To backup currently running Debian, run this command and do not
+    forget the final ``.``::
 
         tar --create --gzip --verbose --one-file-system --ignore-failed-read \
             --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
 
+
 Recovery with tar
 -----------------
 
- 1. To recover, boot to Live CD
+#.  To recover, boot to Live CD.
 
- 2. Mount backups and Debian partitions
+#.  Mount backups and Debian partitions.
 
- 3. Run::
+#.  Run::
 
         tar --extract --gzip --file=/mnt/debian-backup/backup.tgz --directory=/mnt/debian-rootfs/
+
 
 Recover GRUB and /boot on Debian UEFI disk with LUKS root
 ---------------------------------------------------------
 
-NOTE: This can be easily made with variant without luks
-Because it's not necessary to have swal in external partition, we don't have it.
+.. note::
 
- 1. Boot Live CD in UEFI mode.
+    This can be easily made with a variant without LUKS. Because it is
+    not necessary to have swap in an external partition, we do not have it
+    here.
 
- 2. Mount target system::
+#.  Boot Live CD in UEFI mode.
+
+#.  Mount target system::
 
         mount /dev/mapper/cryptroot /mnt/usb-root
         mount /dev/sdX1             /mnt/usb-root/boot/efi
         mount /dev/sdX2             /mnt/usb-root/boot
 
- 3. Bind required system filesystems::
+#.  Bind required system filesystems::
 
         mount --bind /dev           /mnt/usb-root/dev
         mount --bind /dev/pts       /mnt/usb-root/dev/pts
         mount --bind /proc          /mnt/usb-root/proc
         mount --bind /sys           /mnt/usb-root/sys
 
- 5. Enter chroot::
+#.  Enter chroot::
 
         chroot /mnt/usb-root /bin/bash
 
- 6. Fix /etc/crypttab::
+#.  Fix ``/etc/crypttab``::
 
         cryptsetup luksUUID /dev/sdX3
         vim /etc/crypttab
 
-    EXAMPLE::
+    Example::
 
         my-name-for-mounted-luks-root  UUID=LUKS-UUID-HERE   none   luks,keyscript=decrypt_keyctl
         my-name-for-mounted-luks-swap  UUID=SWAP-UUID-HERE   none   luks,initramfs,keyscript=decrypt_keyctl
 
-    NOTE: Thanks to "keyscript=decrypt_keyctl" it will ask for password only
-    once, and thanks to "initramfs" the swapp will be unlocked during the
-    entering passwd phase.
+    .. note::
 
-    WARNING: "apt install keyutils" has to be installed, otherwise
-    keyscript=decrypt_keyctl will not work
+        Thanks to ``keyscript=decrypt_keyctl`` it will ask for password
+        only once. Thanks to ``initramfs`` the swap will be unlocked during
+        the password-entering phase.
 
- 7. Fix /etc/fstab::
+    .. warning::
+
+        ``apt install keyutils`` has to be installed, otherwise
+        ``keyscript=decrypt_keyctl`` will not work.
+
+#.  Fix ``/etc/fstab``::
 
         blkid
         vim /etc/fstab
 
-    EXAMPLE::
+    Example::
 
         UUID=ROOT-EXT4-UUID  /          ext4  defaults,noatime  0  1
         UUID=BOOT-UUID       /boot      ext4  defaults,noatime  0  2
         UUID=EFI-UUID        /boot/efi  vfat  umask=0077       0  1
 
- 8. Fix swap new UUID here::
+#.  Fix new swap UUID here::
 
         vim /etc/initramfs-tools/conf.d/resume
 
-    EXAMPLE::
+    Example::
 
         RESUME=UUID=b6bf3907-84f5-4215-8634-e617a10e1a47
 
- 8. Update initramfs::
+#.  Update initramfs::
 
         apt install cryptsetup-initramfs
-        apt install keyutilsx
+        apt install keyutils
         update-initramfs -u -k all
 
-    NOTE: 
+    .. note::
 
-    In case of SWAP, in may send warnings to console about old swap uuid
-    not found, it shall be ok::
+        In case of swap, it may send warnings to console about old swap
+        UUID not found. It should be OK.
 
- 9. Reinstall GRUB for UEFI removable boot::
+#.  Reinstall GRUB for UEFI removable boot::
 
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --removable --recheck
         update-grub
 
-10. Verify EFI and boot files::
+#.  Verify EFI and boot files::
 
         ls -R /boot/efi/EFI
         ls -l /boot
 
-11. Exit and unmount::
+#.  Exit and unmount::
 
         exit
         cd /
@@ -249,18 +269,20 @@ Because it's not necessary to have swal in external partition, we don't have it.
         cryptsetup close cryptroot
         sync
 
-Add backup disk automout during startup
----------------------------------------
 
- 1. Suppose the disk in encrypted by luks. Add to "/etc/crypttab"::
+Add backup disk automount during startup
+----------------------------------------
+
+#.  Suppose the disk is encrypted by LUKS. Add this to
+    ``/etc/crypttab``::
 
         crypt-debian-backup        UUID=BACKUP_DISK_LUKS_UUID none luks,initramfs,keyscript=decrypt_keyctl
 
- 2. Add to "/etc/fstab"::
+#.  Add this to ``/etc/fstab``::
 
         UUID=BACKUP_DISK_UUID    /mnt/debian-backup     ext4    defaults,nofail     0     2
 
- 3. Unlock the disk and update initram::
+#.  Unlock the disk and update initramfs::
 
         cryptsetup luksOpen /dev/sdb1 crypt-debian-backup
         update-initramfs -u -k all
@@ -272,32 +294,32 @@ Creating partitions
 Create EFI, boot and ext4 root partition on external disk
 ---------------------------------------------------------
 
- 1. Wipe old filesystem and create empty GPT table::
+#.  Wipe old filesystem and create empty GPT table::
 
         wipefs -a /dev/sdX
         parted /dev/sdX --script mklabel gpt
 
- 2. Create partitions::
+#.  Create partitions::
 
         parted /dev/sdX --script mkpart my-efi   fat32    1MiB    513MiB
         parted /dev/sdX --script mkpart my-boot  ext4   513MiB   1537MiB
         parted /dev/sdX --script mkpart my-root  ext4  1537MiB  52737MiB
 
- 3. Mark 1st partition as EFI::
+#.  Mark first partition as EFI::
 
         parted /dev/sdX --script set 1 esp on
 
- 8. Reload partition table::
+#.  Reload partition table::
 
         partprobe /dev/sdX
 
- 9. Format EFI partition::
+#.  Format EFI, boot and root partitions::
 
         mkfs.vfat -F 32 -n  my-efi-fs   /dev/sdX1
         mkfs.ext4 -L        my-boot-fs  /dev/sdX2
         mkfs.ext4 -L        my-root-fs  /dev/sdX3
 
-10. Optional: To format swap, use the command as follow::
+#.  Optional: To format swap, use the command as follows::
 
         mkswap /dev/sdXN
 
@@ -308,33 +330,34 @@ LUKS encryption
 Create fresh LUKS on partition
 ------------------------------
 
-WARNING: This destroys existing data on the partition. Backup data first.
+.. warning::
 
- 1. Create LUKS container pn ext4 partition::
+    This destroys existing data on the partition. Backup data first.
+
+#.  Create LUKS container on ext4 partition::
 
         cryptsetup luksFormat --type luks2 /dev/sdX1
         cryptsetup open /dev/sdX1 cryptdisk
         mkfs.ext4 /dev/mapper/cryptdisk
 
- 2. Mount it::
+#.  Mount it::
 
         mkdir -p /mnt/cryptdisk
         mount /dev/mapper/cryptdisk /mnt/cryptdisk
 
- 3. Restore backup data into /mnt/cryptdisk.
+#.  Restore backup data into ``/mnt/cryptdisk``.
 
 
 Unlock and mount existing LUKS partition
 ----------------------------------------
 
- 1. Open and mount encrypted partition::
+#.  Open and mount encrypted partition::
 
         cryptsetup luksOpen /dev/sdX1 cryptdisk
         mkdir -p /mnt/cryptdisk
         mount /dev/mapper/cryptdisk /mnt/cryptdisk
 
- 2. Unmount and close encrypted partition::
+#.  Unmount and close encrypted partition::
 
         umount /mnt/cryptdisk
         cryptsetup luksClose cryptdisk
-
