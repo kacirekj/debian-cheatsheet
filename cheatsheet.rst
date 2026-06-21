@@ -98,6 +98,8 @@ Run app as root i X-session
 Stop all user-related services when user is not logged in
 ---------------------------------------------------------
 
+It helps to have clean `ps aux`::
+
     loginctl disable-linger debian   # For user "debian"
 
 
