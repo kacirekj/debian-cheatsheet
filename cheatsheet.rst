@@ -259,6 +259,10 @@ Create EFI, boot and ext4 root partition on external disk
     mkfs.ext4 -L        my-boot-fs  /dev/sdX2
     mkfs.ext4 -L        my-root-fs  /dev/sdX3
 
+10. Optional: To format swap, use this:
+
+    mkswap /dev/sdXN
+
 
 
 LUKS encryption
