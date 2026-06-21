@@ -6,9 +6,9 @@ Debian cheatsheet
 Tricks
 ======
 
-    Search inside of files::
+Search inside of files::
 
-        grep -r "hledany_text" /cesta/slozka
+    grep -r "hledany_text" /cesta/slozka
 
     
 
