@@ -189,7 +189,16 @@ Because it's not necessary to have swal in external partition, we don't have it.
 
     Example:
 
-    cryptroot UUID=LUKS-UUID-HERE none luks
+    my-name-for-mounted-luks-root UUID=LUKS-UUID-HERE   none   luks,keyscript=decrypt_keyctl
+    my-name-for-mounted-luks-swap  UUID=SWAP-UUID-HERE  none   luks,initramfs,keyscript=decrypt_keyctl
+
+    Note:
+
+    Thanks to "keyscript=decrypt_keyctl" it will ask for password only once, and thanks to "initramfs" the swapp will be unlocked during the entering passwd phase.
+
+    Warning:
+
+    "apt install keyutils" has to be installed, otherwise keyscript=decrypt_keyctl will not work
 
 7. Fix /etc/fstab::
 
@@ -202,9 +211,19 @@ Because it's not necessary to have swal in external partition, we don't have it.
     UUID=BOOT-UUID       /boot      ext4  defaults,noatime  0  2
     UUID=EFI-UUID        /boot/efi  vfat  umask=0077       0  1
 
+8. Fix swap new UUID here::
+
+    vim /etc/initramfs-tools/conf.d/resume
+
+    Example:
+
+    RESUME=UUID=b6bf3907-84f5-4215-8634-e617a10e1a47
+
 8. Update initramfs. NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
 
     apt install cryptsetup-initramfs
+    update-initramfs -u -k all
+
     update-initramfs -u -k all
 
 9. Reinstall GRUB for UEFI removable boot::
