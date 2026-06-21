@@ -222,8 +222,7 @@ Because it's not necessary to have swal in external partition, we don't have it.
 8. Update initramfs. NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
 
     apt install cryptsetup-initramfs
-    update-initramfs -u -k all
-
+    apt install keyutilsx
     update-initramfs -u -k all
 
 9. Reinstall GRUB for UEFI removable boot::
