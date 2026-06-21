@@ -1,4 +1,3 @@
-```rst
 =================
 Debian cheatsheet
 =================
@@ -131,8 +130,8 @@ Setup XRDP
 
         apt install pipewire pipewire-module-xrdp
 
-NOTE: Sound works out of box as far as the above script is properly executed from /etc/xdg/ during the
-session startup! 
+    NOTE: Sound works out of box as far as the above script is properly executed from /etc/xdg/ during the
+    session startup! 
 
 
 
@@ -145,7 +144,8 @@ Backup with tar
 
  1. To backup currently running Debian, run this command and don't forget "."::
 
-        tar --create --gzip --verbose --one-file-system --ignore-failed-read --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
+        tar --create --gzip --verbose --one-file-system --ignore-failed-read \
+            --sparse --exclude=/mnt --file=/mnt/debian-backup/backup.tgz --directory=/ .
 
 
 Recovery with tar
@@ -195,14 +195,10 @@ Because it's not necessary to have swal in external partition, we don't have it.
         my-name-for-mounted-luks-root UUID=LUKS-UUID-HERE   none   luks,keyscript=decrypt_keyctl
         my-name-for-mounted-luks-swap  UUID=SWAP-UUID-HERE  none   luks,initramfs,keyscript=decrypt_keyctl
 
-    NOTE:
+    NOTE: Thanks to "keyscript=decrypt_keyctl" it will ask for password only once, and thanks to "initramfs" 
+    the swapp will be unlocked during the entering passwd phase.
 
-      Thanks to "keyscript=decrypt_keyctl" it will ask for password only once, and thanks to "initramfs" the swapp will
-    be unlocked during the entering passwd phase.
-
-    WARNING:
-
-      "apt install keyutils" has to be installed, otherwise keyscript=decrypt_keyctl will not work
+    WARNING: "apt install keyutils" has to be installed, otherwise keyscript=decrypt_keyctl will not work
 
  7. Fix /etc/fstab::
 
@@ -223,11 +219,13 @@ Because it's not necessary to have swal in external partition, we don't have it.
 
         RESUME=UUID=b6bf3907-84f5-4215-8634-e617a10e1a47
 
- 8. Update initramfs. NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
+ 8. Update initramfs::
 
         apt install cryptsetup-initramfs
         apt install keyutilsx
         update-initramfs -u -k all
+
+    NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
 
  9. Reinstall GRUB for UEFI removable boot::
 
