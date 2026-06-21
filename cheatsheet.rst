@@ -253,6 +253,23 @@ Because it's not necessary to have swal in external partition, we don't have it.
     sync
 
 
+Add backup disk automout during startup
+---------------------------------------
+
+1. Suppose the disk in encrypted by luks. Add to "/etc/crypttab":
+
+    crypt-debian-backup  	UUID=BACKUP_DISK_LUKS_UUID none luks,initramfs,keyscript=decrypt_keyctl
+
+2. Add to "/etc/fstab":
+
+    UUID=BACKUP_DISK_UUID    /mnt/debian-backup     ext4    defaults,nofail     0     2
+
+3. Unlock the disk and update initram:
+
+    cryptsetup luksOpen /dev/sdb1 crypt-debian-backup
+    update-initramfs -u -k all
+
+    
 
 Creating partitions
 ===================
