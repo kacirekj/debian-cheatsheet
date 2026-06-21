@@ -3,6 +3,15 @@ Debian cheatsheet
 =================
 
 
+Tricks
+======
+
+    Search inside of files::
+
+        grep -r "hledany_text" /cesta/slozka
+
+    
+
 
 Package manager
 ===============
@@ -193,7 +202,7 @@ Because it's not necessary to have swal in external partition, we don't have it.
     UUID=BOOT-UUID       /boot      ext4  defaults,noatime  0  2
     UUID=EFI-UUID        /boot/efi  vfat  umask=0077       0  1
 
-8. Update initramfs::
+8. Update initramfs. NOTE: In case of SWAP, in may send warnings to console about old swap uuid not found, it shall be ok::
 
     apt install cryptsetup-initramfs
     update-initramfs -u -k all
@@ -259,7 +268,7 @@ Create EFI, boot and ext4 root partition on external disk
     mkfs.ext4 -L        my-boot-fs  /dev/sdX2
     mkfs.ext4 -L        my-root-fs  /dev/sdX3
 
-10. Optional: To format swap, use this:
+10. Optional: To format swap, use the command as follow::
 
     mkswap /dev/sdXN
 
